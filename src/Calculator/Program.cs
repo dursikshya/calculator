@@ -7,30 +7,48 @@ namespace Calculator
 {
     interface ICalculator
     {
-        public int Operate();
+        public int Operate(Operation operation,int operationValue);
+        public void Reset();
+    }
+
+    enum Operation
+    {
+        Addition,
+        Multiplication,
+        Division,
     }
     class Calc:ICalculator
     {
-        public Calc(int value, string operationCode)
-        {
-            this.Value = value;
-        }
-
-        private int InitialValue { get; set; }
         private int Value { get; set; }
-        public string op { get; set; }
-        public int Operate()
+        // public Operation op { get; set; }
+        public int Operate(Operation operation,int operationValue)
         {
-            int value = 0;
             try
             {
-                value = InitialValue / value;
+                switch (operation)
+                {
+                    case Operation.Addition:
+                        Value += operationValue;
+                        break;
+                    case Operation.Division:
+                        Value /= operationValue;
+                        break;
+                    case Operation.Multiplication:
+                        Value *= operationValue;
+                        break;
+                }
             }
             catch (DivideByZeroException e)
             {
-                Console.WriteLine("Don't divide by");
+                Console.WriteLine(e);
             }
-            return value;
+
+            return this.Value;
+        }
+
+        public void Reset()
+        {
+            this.Value = 0;
         }
     }
 
@@ -38,8 +56,11 @@ namespace Calculator
     {
         static void Main(string[] args)
         {
-            var calc = new Calc(0,"+");
-            Console.WriteLine(calc.Operate());
+            
+            var calc = new Calc();
+            Console.WriteLine(calc.Operate(Operation.Addition,2));
+            Console.WriteLine(calc.Operate(Operation.Multiplication,9));
+            Console.WriteLine(calc.Operate(Operation.Division,0));
 
             while (true)
             {
